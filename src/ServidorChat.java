@@ -1,6 +1,8 @@
 // Iván Campelo
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class ServidorChat {
@@ -13,7 +15,21 @@ public class ServidorChat {
 
     public static void main(String[] args) {
         
-        server = new ServerSocket(PORT);
+        try {
+            server = new ServerSocket(PORT);
+            System.out.println("Server activo en " + server.getLocalSocketAddress() 
+                + ":" + server.getLocalPort());
+
+            // It's always gonna be running sooo...
+            while (true) {
+                Socket cliente = server.accept();
+                ClienteThread hiloCli = new ClienteThread(cliente);
+
+            }
+
+        } catch (IOException e) {
+            System.err.println("ERROR iniciando server!");;
+        }
 
     }
 }
