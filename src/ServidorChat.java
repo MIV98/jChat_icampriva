@@ -23,7 +23,7 @@ public class ServidorChat {
             // It's always gonna be running sooo...
             while (true) {
                 Socket cliente = server.accept();
-                ClienteThread hiloCli = new ClienteThread(cliente);
+                ClienteThreadIn cin = new ClienteThreadIn(cliente.getInputStream().readAllBytes());
 
             }
 

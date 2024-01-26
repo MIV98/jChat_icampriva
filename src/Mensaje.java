@@ -1,28 +1,28 @@
 public class Mensaje {
     
-    private ClienteThread emisor;
-    private ClienteThread receptor;
+    private ClienteThreadIn emisor;
+    private ClienteThreadIn receptor;
     private String mensaje;
     
-    public Mensaje(ClienteThread emisor, ClienteThread receptor, String mensaje) {
+    public Mensaje(ClienteThreadIn emisor, ClienteThreadIn receptor, String mensaje) {
         this.emisor = emisor;
         this.receptor = receptor;
         this.mensaje = mensaje;
     }
 
-    public ClienteThread getEmisor() {
+    public ClienteThreadIn getEmisor() {
         return emisor;
     }
 
-    public void setEmisor(ClienteThread emisor) {
+    public void setEmisor(ClienteThreadIn emisor) {
         this.emisor = emisor;
     }
 
-    public ClienteThread getReceptor() {
+    public ClienteThreadIn getReceptor() {
         return receptor;
     }
 
-    public void setReceptor(ClienteThread receptor) {
+    public void setReceptor(ClienteThreadIn receptor) {
         this.receptor = receptor;
     }
 

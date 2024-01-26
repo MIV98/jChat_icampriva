@@ -1,5 +1,9 @@
 // Iván Campelo
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class ClienteChat {
 
 
@@ -10,7 +14,16 @@ public class ClienteChat {
             System.out.println("Uso: java ClienteChat <dirección_servidor> <nombre_nic>");
         } else {
             // Actual client functionality
-            ServidorChat server =
+            
+            try {
+                // args[1] is <direccion_servidor>
+                Socket server = new Socket(args[1], ServidorChat.PORT);
+                // args[2] is <nombre_nic>
+                server.getOutputStream().write(args[2].getBytes());
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+
         }
 
     }
