@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class ServidorChat {
 
@@ -75,7 +76,13 @@ public class ServidorChat {
                         "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" + 
                         "#salir: se desconecta del chat").getBytes());
                 } else if (comando.contains(Comando.LISTAR.toString())) {
-                    
+                    String salida = "Actualmente están conectados " 
+                        + usuariosConectados.size() + " usuarios:\n";
+
+                    for (Entry<String, ClienteThread> e : usuariosConectados.entrySet()) {
+                        
+                    }
+
                 }
 
             }
