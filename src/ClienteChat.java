@@ -1,12 +1,12 @@
 // Iván Campelo
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ClienteChat {
 
-
+    public static String nick;
+    public static Socket server;
 
     public static void main(String[] args) {
         
@@ -19,7 +19,9 @@ public class ClienteChat {
                 // args[1] is <direccion_servidor>
                 Socket server = new Socket(args[1], ServidorChat.PORT);
                 // args[2] is <nombre_nic>
-                server.getOutputStream().write(args[2].getBytes());
+                nick = args[2];
+                server.getOutputStream().write(nick.getBytes());
+                System.out.println("Estás conectado com el nick " + nick);
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
             }
@@ -27,5 +29,4 @@ public class ClienteChat {
         }
 
     }
-
 }
