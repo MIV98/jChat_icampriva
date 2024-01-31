@@ -49,13 +49,17 @@ public class ServidorChat {
     // TODO clean up and refactor all of this in general ugh
     public static void manejarComando(String comando, ClienteThread cliente) {
         try {
+            comando = comando.toUpperCase();
+
             if (!comando.startsWith("#") && !cliente.isConversando()) {
                 cliente.getSocket().getOutputStream().write(("[ERROR] "
                         + comando + " no se reconoce como comando. Si quieres iniciar una " +
                         "conversación o responder a un usuario utilza el comando" +
                         " #charlar <nic>").getBytes());
             } else if(!comando.startsWith("#") && cliente.isConversando()) {
-                // TODO send message to receiver
+                ClienteThread receptor = usuariosConectados.get(cliente.getNickReceptor());
+                String mensaje = ">" + cliente.getNick() + " " + comando;
+                receptor.getSocket().getOutputStream().write(mensaje.getBytes());
             }else {
                 comando = comando.substring(1); // skip the "#"
 
