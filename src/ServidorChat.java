@@ -33,7 +33,7 @@ public class ServidorChat {
                 
                 // TODO handle users trying to connect with a username that already exists
                 
-                System.out.println("Conectado cliente con nick");
+                System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
 
                 ClienteThread cli = new ClienteThread(cliente, nick);
                 usuariosConectados.put(nick, cli);
