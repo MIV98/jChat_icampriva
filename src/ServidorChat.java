@@ -54,7 +54,7 @@ public class ServidorChat {
                         + comando + " no se reconoce como comando. Si quieres iniciar una " +
                         "conversación o responder a un usuario utilza el comando" +
                         " #charlar <nic>").getBytes());
-            } else if(!comando.startsWith("#") && !cliente.isConversando()) {
+            } else if(!comando.startsWith("#") && cliente.isConversando()) {
                 // TODO send message to receiver
             }else {
                 comando = comando.substring(1); // skip the "#"
