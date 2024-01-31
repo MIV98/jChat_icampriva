@@ -80,9 +80,10 @@ public class ServidorChat {
                         + usuariosConectados.size() + " usuarios:\n";
 
                     for (Entry<String, ClienteThread> e : usuariosConectados.entrySet()) {
-                        
+                        salida += e.getKey() + "\n"; // the key is the username
                     }
 
+                    cliente.getSocket().getOutputStream().write(salida.getBytes());
                 }
 
             }
