@@ -84,8 +84,15 @@ public class ServidorChat {
                     }
 
                     cliente.getSocket().getOutputStream().write(salida.getBytes());
+                } else if (comando.contains(Comando.SALIR.toString())) {
+                    cliente.getSocket().getOutputStream().write(Comando.SALIR.toString().getBytes());
+                } else {
+                    // TODO this is the same code as above soooo... refactor a bit
+                    cliente.getSocket().getOutputStream().write(("[ERROR] "
+                        + comando + " no se reconoce como comando. Si quieres iniciar una " +
+                        "conversación o responder a un usuario utilza el comando" +
+                        " #charlar <nic>").getBytes());
                 }
-
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
