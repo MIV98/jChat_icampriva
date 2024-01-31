@@ -57,6 +57,7 @@ public class ServidorChat {
                         "conversación o responder a un usuario utilza el comando" +
                         " #charlar <nic>").getBytes());
             } else if(!comando.startsWith("#") && cliente.isConversando()) {
+                // TODO check if receptor is still connected and end conversation if they're not
                 ClienteThread receptor = usuariosConectados.get(cliente.getNickReceptor());
                 String mensaje = ">" + cliente.getNick() + " " + comando;
                 receptor.getSocket().getOutputStream().write(mensaje.getBytes());
