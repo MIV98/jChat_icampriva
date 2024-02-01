@@ -28,8 +28,6 @@ public class ServidorChat {
             server = new ServerSocket(PORT);
             System.out.println("Server activo en " + server.getLocalSocketAddress());
 
-            System.out.println(usuariosConectados.size());
-
             // It's always gonna be running sooo...
             while (true) {
                 Socket cliente = server.accept();
