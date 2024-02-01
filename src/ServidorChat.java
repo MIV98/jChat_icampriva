@@ -100,9 +100,8 @@ public class ServidorChat {
                         for (Entry<String, ClienteThread> e : usuariosConectados.entrySet()) {
                             salida += e.getKey() + "\n"; // the key is the username
                         }
+                        cliente.getSocket().getOutputStream().write(salida.getBytes());
                     }
-
-                    cliente.getSocket().getOutputStream().write(salida.getBytes());
                 } else if (comando.contains(Comando.SALIR.toString())) {
                     cliente.getSocket().getOutputStream().write(Comando.SALIR.toString().getBytes());
                 } else {
