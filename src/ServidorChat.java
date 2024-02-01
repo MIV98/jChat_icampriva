@@ -38,17 +38,7 @@ public class ServidorChat {
                 // TODO handle users trying to connect with a username that already exists
                 
                 System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
-
-                ClienteThread cli = new ClienteThread(cliente, nick);
                 
-                
-                // Do I need this?
-                synchronized (usuariosConectados) {
-                    usuariosConectados.put(nick, cli);
-                }
-                
-                cli.start();
-
                 // Send the client their Thread nickname so they can acces it and wait for it to complete
                 cliOut.writeUTF(nick);
             }
@@ -144,6 +134,17 @@ public class ServidorChat {
                 return usuariosConectados.get(nick);
             } else {
                 throw new Exception("[ERROR]" + nick + " no se encuantra conectado!");
+            }
+        }
+    }
+
+    public static boolean registrarUsuario(String nick, ClienteThread hilo) {
+        synchronized (usuariosConectados) {
+            if (usuariosConectados.containsKey(nick)) {
+                return false;
+            } else {
+                usuariosConectados.put(nick, hilo);
+                return true;
             }
         }
     }

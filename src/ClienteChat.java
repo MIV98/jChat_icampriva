@@ -28,10 +28,14 @@ public class ClienteChat {
                 DataOutputStream serverOut = new DataOutputStream(server.getOutputStream());
 
                 serverOut.writeUTF(nick);
-                ClienteThread hilo = ServidorChat.getUsuarioConectado(serverIn.readUTF());
-                
-                System.out.println("Estás conectado com el nick " + nick);
-                hilo.join();
+                ClienteThread hilo = new ClienteThread(server, nick);
+                if (ServidorChat.registrarUsuario(nick, hilo)) {
+                    System.out.println("Estás conectado com el nick " + nick);
+                    hilo.start();
+                    hilo.join();
+                } else {
+                    System.err.println("[ERROR] El usuario " + nick + " ya se encuentra conectado!");
+                }
 
                 System.out.println("Adios...");
             } catch (IOException ex) {
