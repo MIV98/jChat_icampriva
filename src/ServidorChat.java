@@ -35,22 +35,22 @@ public class ServidorChat {
                 DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
                 String nick = cliIn.readUTF();
-                System.out.println(nick);
                 // TODO handle users trying to connect with a username that already exists
                 
                 System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
 
                 ClienteThread cli = new ClienteThread(cliente, nick);
                 
-                // Send the client their Thread nickname so they can acces it and wait for it to complete
-                cliOut.writeUTF(nick);
-
+                
                 // Do I need this?
                 synchronized (usuariosConectados) {
                     usuariosConectados.put(nick, cli);
                 }
                 
                 cli.start();
+
+                // Send the client their Thread nickname so they can acces it and wait for it to complete
+                cliOut.writeUTF(nick);
             }
 
         } catch (IOException e) {

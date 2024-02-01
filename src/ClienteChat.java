@@ -32,7 +32,7 @@ public class ClienteChat {
                 
                 System.out.println("Estás conectado com el nick " + nick);
                 hilo.join();
-                
+
                 System.out.println("Adios...");
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
