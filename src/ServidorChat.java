@@ -23,8 +23,7 @@ public class ServidorChat {
         
         try {
             server = new ServerSocket(PORT);
-            System.out.println("Server activo en " + server.getLocalSocketAddress() 
-                + ":" + server.getLocalPort());
+            System.out.println("Server activo en " + server.getLocalSocketAddress());
 
             // It's always gonna be running sooo...
             while (true) {
