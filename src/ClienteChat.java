@@ -36,6 +36,8 @@ public class ClienteChat {
                 } else {
                     System.err.println("[ERROR] El usuario " + nick + " ya se encuentra conectado!");
                 }
+
+                server.close();
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
             } catch (InterruptedException e) {
