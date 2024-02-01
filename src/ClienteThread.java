@@ -25,8 +25,8 @@ public class ClienteThread  extends Thread {
 
     @Override
     public void run() {
-        try {
-            DataInputStream in = new DataInputStream(socket.getInputStream());
+        try (DataInputStream in = new DataInputStream(socket.getInputStream());) {
+            
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
             this.receiver = new Thread(() -> {
@@ -51,7 +51,11 @@ public class ClienteThread  extends Thread {
                 Scanner sc = new Scanner(System.in);
                 while (true) {
                     mensaje = sc.nextLine();
-                    ServidorChat.manejarComando(mensaje, this);
+                    try {
+                        out.writeUTF(mensaje);
+                    } catch (IOException e) {
+                        System.err.println("[ERROR] Server desconectado.");
+                    }
                 }
             });
 
@@ -63,7 +67,7 @@ public class ClienteThread  extends Thread {
         } catch (IOException ex) {
             System.err.println("Error obteniendo Socket Data Streams");
         } catch (InterruptedException intEx) {
-            System.err.println("DEBUG: Interrupted Exception");
+            System.err.println("Adios...");
         }
     }
 

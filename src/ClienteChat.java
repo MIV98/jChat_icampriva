@@ -24,7 +24,6 @@ public class ClienteChat {
                 // args[1] is <nombre_nic>
                 nick = args[1];
                 
-                DataInputStream serverIn = new DataInputStream(server.getInputStream());
                 DataOutputStream serverOut = new DataOutputStream(server.getOutputStream());
 
                 serverOut.writeUTF(nick);
@@ -37,8 +36,6 @@ public class ClienteChat {
                 } else {
                     System.err.println("[ERROR] El usuario " + nick + " ya se encuentra conectado!");
                 }
-
-                System.out.println("Adios...");
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
             } catch (InterruptedException e) {

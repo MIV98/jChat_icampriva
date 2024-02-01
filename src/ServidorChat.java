@@ -38,7 +38,9 @@ public class ServidorChat {
                 // TODO handle users trying to connect with a username that already exists
                 
                 System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
-                
+                Thread hiloSocket = new Thread(() -> manejarComandosSocket(cliente, usuariosConectados.get(nick)));
+                hiloSocket.start();
+
                 // Send the client their Thread nickname so they can acces it and wait for it to complete
                 cliOut.writeUTF("Estás conectado con el nick " + nick);
             }
@@ -50,11 +52,10 @@ public class ServidorChat {
     }
 
     // TODO clean up and refactor all of this in general ugh
-    public static void manejarComando(String comando, ClienteThread cliente) {
-        try {
-            comando = comando.toUpperCase();
-            DataInputStream cliIn = new DataInputStream(cliente.getSocket().getInputStream());
-            DataOutputStream cliOut = new DataOutputStream(cliente.getSocket().getOutputStream());
+    public static void manejarComandosSocket(Socket socket, ClienteThread cliente) {
+        try (DataInputStream cliIn = new DataInputStream(socket.getInputStream())){
+            String comando = cliIn.readUTF().toUpperCase();
+            DataOutputStream cliOut = new DataOutputStream(socket.getOutputStream());
 
 
             if (!comando.startsWith("#") && !cliente.isConversando()) {
@@ -103,6 +104,7 @@ public class ServidorChat {
                     }
                 } else if (comando.contains(Comando.SALIR.toString())) {
                     cliOut.writeUTF(Comando.SALIR.toString());
+                    desconectarCliente(cliente);
                 } else {
                     // TODO this is the same code as above soooo... refactor a bit
                     cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " + 
@@ -112,16 +114,20 @@ public class ServidorChat {
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("This exception should never happen since"
+            + " desconectarCliente() checks if the client is conected first.");
         }
     }
 
-    public static void desconectarCliente(ClienteThread cliente) {
+    public static void desconectarCliente(ClienteThread cliente) throws Exception {
         synchronized (usuariosConectados) {
             if (usuariosConectados.containsKey(cliente.getNick())) {
                 System.out.println(cliente.getNick() + "\t" 
                 + cliente.getSocket().getInetAddress() + "\tDESCONECTADO");
     
-                usuariosConectados.get(cliente.getNick()).interrupt();
+                
+                getUsuarioConectado(cliente.getNick()).interrupt();
                 usuariosConectados.remove(cliente.getNick());
             }
         }
@@ -143,7 +149,7 @@ public class ServidorChat {
             if (usuariosConectados.containsKey(nick)) {
                 return false;
             } else {
-                usuariosConectados.put(nick, hilo);
+                usuariosConectados.put(nick, hilo);    
                 return true;
             }
         }
