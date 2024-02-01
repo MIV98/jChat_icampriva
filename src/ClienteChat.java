@@ -21,9 +21,14 @@ public class ClienteChat {
                 // args[2] is <nombre_nic>
                 nick = args[2];
                 server.getOutputStream().write(nick.getBytes());
+                ClienteThread hilo = ServidorChat.usuariosConectados.get(server.getInputStream().readAllBytes().toString());
                 System.out.println("Estás conectado com el nick " + nick);
+                hilo.join();
+                System.out.println("Adios...");
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
+            } catch (InterruptedException e) {
+                System.err.println("[ERROR] Hilo interrumpido");
             }
 
         }
