@@ -28,16 +28,12 @@ public class ClienteChat {
 
                 serverOut.writeUTF(nick);
                 ClienteThread hilo = new ClienteThread(server, nick);
-                if (ServidorChat.registrarUsuario(nick, hilo)) {
-                    // Conection SUCCESS!!!
-                    hilo.start();
-                    hilo.join();
-                    ServidorChat.desconectarCliente(hilo);
-                } else {
-                    System.err.println("[ERROR] El usuario " + nick + " ya se encuentra conectado!");
-                }
+
+                hilo.start();
+                hilo.join();
 
                 server.close();
+                
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
             } catch (InterruptedException e) {

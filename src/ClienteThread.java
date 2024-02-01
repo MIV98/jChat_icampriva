@@ -35,6 +35,13 @@ public class ClienteThread  extends Thread {
                     try {
                         mensaje = in.readUTF();
 
+                        // The server will tell the client to start a conversation with <user> by sending a !<user> message
+                        if (mensaje.contains("!")) {
+                            // TODO make this more readable
+                            this.iniciarConversacion(mensaje.substring(1));
+                            mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
+                        }
+
                         System.out.println(mensaje);
                     } catch (IOException e) {
                         System.err.println("[ERROR] Leyendo respuesta del servidor");
@@ -52,6 +59,10 @@ public class ClienteThread  extends Thread {
                 while (true) {
                     mensaje = sc.nextLine();
                     try {
+                        if (this.isConversando()) {
+                            mensaje = "!" + this.nickReceptor + " " + mensaje;
+                        }
+
                         out.writeUTF(mensaje);
                     } catch (IOException e) {
                         System.err.println("[ERROR] Server desconectado.");
