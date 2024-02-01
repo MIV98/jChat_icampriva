@@ -31,9 +31,13 @@ public class ClienteThread  extends Thread {
 
             this.receiver = new Thread(() -> {
                 String mensaje = "";
-                while (!mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString())) {
+                while (true) {
                     try {
                         mensaje = in.readUTF();
+
+                        if (mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString())) {
+                            break;
+                        }
 
                         // The server will tell the client to start a conversation with <user> by sending a !<user> message
                         if (mensaje.contains("!")) {
@@ -44,7 +48,9 @@ public class ClienteThread  extends Thread {
 
                         System.out.println(mensaje);
                     } catch (IOException e) {
-                        System.err.println("[ERROR] Perdida conexión con el servidor!");
+                        // ---- why does it keep throwing me this exception
+                        // nvm I'm a dumbass and forgot to make the server thread's run a loop -.-"
+                        System.err.println("[ERROR] Conexión con Server perdida");
                         break;
                     }
                 }
@@ -67,6 +73,7 @@ public class ClienteThread  extends Thread {
                         out.writeUTF(mensaje);
                     } catch (IOException e) {
                         System.err.println("[ERROR] Server desconectado.");
+                        break;
                     }
                 }
             });

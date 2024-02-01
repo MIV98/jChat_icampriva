@@ -43,6 +43,7 @@ public class ServidorChat {
                 synchronized (ServidorChat.usuariosConectados) {
                     if (ServidorChat.usuariosConectados.containsKey(nick)) {
                         cliOut.writeUTF("[ERROR] El usuario ya está conectado!");
+                        cliOut.writeUTF(Comando.SALIR.toString());
                         cliente.close();
                     } else {
                         ServidorChat.usuariosConectados.put(nick, cliente);
@@ -52,8 +53,6 @@ public class ServidorChat {
                 }
 
                 Thread hiloSocket = new Thread(() -> manejarComandosSocket(nick, cliente));
-
-                
 
                 hiloSocket.start();
             }
@@ -66,88 +65,89 @@ public class ServidorChat {
 
     // TODO clean up and refactor all of this in general ugh
     public static void manejarComandosSocket(String nick, Socket cliente) {
-        try (DataInputStream cliIn = new DataInputStream(cliente.getInputStream())){
-            String comando = cliIn.readUTF(); // TODO make commands case insensitive
-            DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
+        try (DataInputStream cliIn = new DataInputStream(cliente.getInputStream())) {
+            while (usuariosConectados.containsKey(nick)) {
+                String comando = cliIn.readUTF(); // TODO make commands case insensitive
+                DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
-            if (!comando.startsWith("#") && !comando.startsWith("!")) {
-                cliOut.writeUTF("[ERROR] "
-                        + comando + " no se reconoce como comando. Si quieres iniciar una " +
-                        "conversación o responder a un usuario utilza el comando" +
-                        " #charlar <nic>");
-            } else if(!comando.startsWith("#") && comando.startsWith("!")) {
-                synchronized (ServidorChat.usuariosConectados) {
-                    // TODO move this to !<nick> handling
-                    // TODO check if receptor is connected
-                    String[] split = comando.split(" ");
-
-                    // split[0] contains recipient username, beginIndex:1 skips the "!"
-                    String nickReceptor = split[0].substring(1); 
-
-                    if (usuariosConectados.containsKey(nickReceptor)) {
-                        Socket receptor = usuariosConectados.get(nickReceptor);
-                        // split[1] contains the actual message
-                        String mensaje = ">" + nick + " " + split[1];
-                        DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
-                        receptorOut.writeUTF(mensaje);
-                    }
-
-                }
-            } else {
-                comando = comando.substring(1); // skip the "#"
-
-                // TODO refactor to a SWITCH
-                if (comando.contains(Comando.CHARLAR.toString())) {
-                    
-                    // TODO how do clients get out of a conversation?
-
+                if (!comando.startsWith("#") && !comando.startsWith("!")) {
+                    cliOut.writeUTF("[ERROR] "
+                            + comando + " no se reconoce como comando. Si quieres iniciar una " +
+                            "conversación o responder a un usuario utiliza el comando" +
+                            " #charlar <nic>");
+                } else if (comando.startsWith("!")) {
+                    // TODO check if they try to chat with themselves
                     synchronized (ServidorChat.usuariosConectados) {
                         String[] split = comando.split(" ");
-                        if (!ServidorChat.usuariosConectados.containsKey(split[1])) {
-                            cliOut.writeUTF("[ERROR] " +
-                            "El usuario" + split[1] + " no se encuentra conectado." +
-                            " Utiliza el comando #list para ver los usuarios " +
-                            "conectados");
-                        } else {
-                            cliOut.writeUTF("!" + split[1]);
+
+                        // split[0] contains recipient username, beginIndex:1 skips the "!"
+                        String nickReceptor = split[0].substring(1);
+
+                        if (usuariosConectados.containsKey(nickReceptor)) {
+                            Socket receptor = usuariosConectados.get(nickReceptor);
+                            // split[1] contains the actual message
+                            String mensaje = ">" + nick + " " + split[1];
+                            DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
+                            receptorOut.writeUTF(mensaje);
                         }
-                    }
-                } else if(comando.contains(Comando.AYUDA.toString())) {
-                    cliOut.writeUTF("#listar: lista" +
-                        " todos los usuarios conectados.\n" + 
-                        "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" + 
-                        "#salir: se desconecta del chat");
-                } else if (comando.contains(Comando.LISTAR.toString())) {
-                    synchronized (ServidorChat.usuariosConectados) {
-                        String salida = "Actualmente están conectados " 
-                            + ServidorChat.usuariosConectados.size() + " usuarios:\n";
-    
-                        for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
-                            salida += e.getKey() + "\n"; // the key is the username
-                        }
-                        cliOut.writeUTF(salida);
-                    }
-                } else if (comando.contains(Comando.SALIR.toString())) {
-                    cliOut.writeUTF(Comando.SALIR.toString());
-                    synchronized (ServidorChat.usuariosConectados) {
-                        if (ServidorChat.usuariosConectados.containsKey(nick)) {
-                            System.out.println(nick + "\t" 
-                            + cliente.getInetAddress() + "\tDESCONECTADO");
-                            
-                            usuariosConectados.remove(nick);
-                        }
+
                     }
                 } else {
-                    // TODO this is the same code as above soooo... refactor a bit
-                    cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " + 
-                        "Si quieres iniciar una conversación o responder a un usuario" + 
-                        "utilza el comando #charlar <nic>");
+                    comando = comando.substring(1).toUpperCase(); // skip the "#"
+
+                    // TODO refactor to a SWITCH
+                    if (comando.contains(Comando.CHARLAR.toString())) {
+
+                        // TODO how do clients get out of a conversation?
+
+                        synchronized (ServidorChat.usuariosConectados) {
+                            String[] split = comando.split(" ");
+                            if (!ServidorChat.usuariosConectados.containsKey(split[1])) {
+                                cliOut.writeUTF("[ERROR] " +
+                                        "El usuario" + split[1] + " no se encuentra conectado." +
+                                        " Utiliza el comando #list para ver los usuarios " +
+                                        "conectados");
+                            } else {
+                                cliOut.writeUTF("!" + split[1]);
+                            }
+                        }
+                    } else if (comando.contains(Comando.AYUDA.toString())) {
+                        cliOut.writeUTF("#listar: lista" +
+                                " todos los usuarios conectados.\n" +
+                                "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
+                                "#salir: se desconecta del chat");
+                    } else if (comando.contains(Comando.LISTAR.toString())) {
+                        synchronized (ServidorChat.usuariosConectados) {
+                            String salida = "Actualmente están conectados "
+                                    + ServidorChat.usuariosConectados.size() + " usuarios:\n";
+
+                            for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
+                                salida += e.getKey() + "\n"; // the key is the username
+                            }
+                            cliOut.writeUTF(salida);
+                        }
+                    } else if (comando.contains(Comando.SALIR.toString())) {
+                        cliOut.writeUTF(Comando.SALIR.toString());
+                        synchronized (ServidorChat.usuariosConectados) {
+                            if (ServidorChat.usuariosConectados.containsKey(nick)) {
+                                System.out.println(nick + "\t"
+                                        + cliente.getInetAddress() + "\tDESCONECTADO");
+
+                                usuariosConectados.remove(nick);
+                            }
+                        }
+                    } else {
+                        // TODO this is the same code as above soooo... refactor a bit
+                        cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " +
+                                "Si quieres iniciar una conversación o responder a un usuario" +
+                                "utilza el comando #charlar <nic>");
+                    }
                 }
             }
         } catch (IOException e) {
-            System.out.println(nick + "\t" 
-            + cliente.getInetAddress() + "\tDESCONECTADO");
+            System.out.println(nick + "\t"
+                    + cliente.getInetAddress() + "\tDESCONECTADO");
         }
     }
 }
