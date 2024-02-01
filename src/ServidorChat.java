@@ -40,7 +40,7 @@ public class ServidorChat {
                 System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
                 
                 // Send the client their Thread nickname so they can acces it and wait for it to complete
-                cliOut.writeUTF(nick);
+                cliOut.writeUTF("Estás conectado con el nick " + nick);
             }
 
         } catch (IOException e) {

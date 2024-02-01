@@ -30,9 +30,10 @@ public class ClienteChat {
                 serverOut.writeUTF(nick);
                 ClienteThread hilo = new ClienteThread(server, nick);
                 if (ServidorChat.registrarUsuario(nick, hilo)) {
-                    System.out.println("Estás conectado com el nick " + nick);
+                    // Conection SUCCESS!!!
                     hilo.start();
                     hilo.join();
+                    ServidorChat.desconectarCliente(hilo);
                 } else {
                     System.err.println("[ERROR] El usuario " + nick + " ya se encuentra conectado!");
                 }
