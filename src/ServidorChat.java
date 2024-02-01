@@ -136,4 +136,15 @@ public class ServidorChat {
             }
         }
     }
+
+    // TODO use this method wherever it's useful + create custom Exception
+    public static ClienteThread getUsuarioConectado(String nick) throws Exception {
+        synchronized (usuariosConectados) {
+            if (usuariosConectados.containsKey(nick)) {
+                return usuariosConectados.get(nick);
+            } else {
+                throw new Exception("[ERROR]" + nick + " no se encuantra conectado!");
+            }
+        }
+    }
 }

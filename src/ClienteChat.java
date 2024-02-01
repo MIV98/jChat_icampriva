@@ -28,7 +28,7 @@ public class ClienteChat {
                 DataOutputStream serverOut = new DataOutputStream(server.getOutputStream());
 
                 serverOut.writeUTF(nick);
-                ClienteThread hilo = ServidorChat.usuariosConectados.get(serverIn.readUTF());
+                ClienteThread hilo = ServidorChat.getUsuarioConectado(serverIn.readUTF());
                 
                 System.out.println("Estás conectado com el nick " + nick);
                 hilo.join();
@@ -38,6 +38,8 @@ public class ClienteChat {
                 System.err.println(ex.getMessage());
             } catch (InterruptedException e) {
                 System.err.println("[ERROR] Hilo interrumpido");
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
             }
 
         }
