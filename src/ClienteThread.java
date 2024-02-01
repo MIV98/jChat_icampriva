@@ -44,7 +44,8 @@ public class ClienteThread  extends Thread {
 
                         System.out.println(mensaje);
                     } catch (IOException e) {
-                        System.err.println("[ERROR] Leyendo respuesta del servidor");
+                        System.err.println("[ERROR] Perdida conexión con el servidor!");
+                        break;
                     }
                 }
 
