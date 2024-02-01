@@ -33,7 +33,7 @@ public class ClienteThread  extends Thread {
                 String mensaje = "";
                 while (!mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString())) {
                     try {
-                        mensaje = in.readAllBytes().toString();
+                        mensaje = in.readUTF();
 
                         System.out.println(mensaje);
                     } catch (IOException e) {

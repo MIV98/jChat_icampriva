@@ -1,5 +1,7 @@
 // Iván Campelo
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,8 +30,12 @@ public class ServidorChat {
             // It's always gonna be running sooo...
             while (true) {
                 Socket cliente = server.accept();
-                String nick = cliente.getInputStream().readAllBytes().toString();
                 
+                DataInputStream cliIn = new DataInputStream(cliente.getInputStream());
+                DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
+
+                String nick = cliIn.readUTF();
+                System.out.println(nick);
                 // TODO handle users trying to connect with a username that already exists
                 
                 System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
@@ -37,7 +43,7 @@ public class ServidorChat {
                 ClienteThread cli = new ClienteThread(cliente, nick);
                 
                 // Send the client their Thread nickname so they can acces it and wait for it to complete
-                cliente.getOutputStream().write(nick.getBytes());
+                cliOut.writeUTF(nick);
 
                 // Do I need this?
                 synchronized (usuariosConectados) {
@@ -57,18 +63,22 @@ public class ServidorChat {
     public static void manejarComando(String comando, ClienteThread cliente) {
         try {
             comando = comando.toUpperCase();
+            DataInputStream cliIn = new DataInputStream(cliente.getSocket().getInputStream());
+            DataOutputStream cliOut = new DataOutputStream(cliente.getSocket().getOutputStream());
+
 
             if (!comando.startsWith("#") && !cliente.isConversando()) {
-                cliente.getSocket().getOutputStream().write(("[ERROR] "
+                cliOut.writeUTF("[ERROR] "
                         + comando + " no se reconoce como comando. Si quieres iniciar una " +
                         "conversación o responder a un usuario utilza el comando" +
-                        " #charlar <nic>").getBytes());
+                        " #charlar <nic>");
             } else if(!comando.startsWith("#") && cliente.isConversando()) {
                 synchronized (usuariosConectados) {
                     // TODO check if receptor is still connected and end conversation if they're not
                     ClienteThread receptor = usuariosConectados.get(cliente.getNickReceptor());
                     String mensaje = ">" + cliente.getNick() + " " + comando;
-                    receptor.getSocket().getOutputStream().write(mensaje.getBytes());
+                    DataOutputStream receptorOut = new DataOutputStream(receptor.getSocket().getOutputStream());
+                    receptorOut.writeUTF(mensaje);
                 }
             } else {
                 comando = comando.substring(1); // skip the "#"
@@ -78,19 +88,19 @@ public class ServidorChat {
                     synchronized (usuariosConectados) {
                         String[] split = comando.split(" ");
                         if (!usuariosConectados.containsKey(split[1])) {
-                            cliente.getSocket().getOutputStream().write(("[ERROR] " +
+                            cliOut.writeUTF("[ERROR] " +
                             "El usuario" + split[1] + " no se encuentra conectado." +
                             " Utiliza el comando #list para ver los usuarios " +
-                            "conectados").getBytes());
+                            "conectados");
                         } else {
                             cliente.iniciarConversacion(split[1]);
                         }
                     }
                 } else if(comando.contains(Comando.AYUDA.toString())) {
-                    cliente.getSocket().getOutputStream().write(("#listar: lista" +
+                    cliOut.writeUTF("#listar: lista" +
                         " todos los usuarios conectados.\n" + 
                         "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" + 
-                        "#salir: se desconecta del chat").getBytes());
+                        "#salir: se desconecta del chat");
                 } else if (comando.contains(Comando.LISTAR.toString())) {
                     synchronized (usuariosConectados) {
                         String salida = "Actualmente están conectados " 
@@ -99,16 +109,15 @@ public class ServidorChat {
                         for (Entry<String, ClienteThread> e : usuariosConectados.entrySet()) {
                             salida += e.getKey() + "\n"; // the key is the username
                         }
-                        cliente.getSocket().getOutputStream().write(salida.getBytes());
+                        cliOut.writeUTF(salida);
                     }
                 } else if (comando.contains(Comando.SALIR.toString())) {
-                    cliente.getSocket().getOutputStream().write(Comando.SALIR.toString().getBytes());
+                    cliOut.writeUTF(Comando.SALIR.toString());
                 } else {
                     // TODO this is the same code as above soooo... refactor a bit
-                    cliente.getSocket().getOutputStream().write(("[ERROR] "
-                        + comando + " no se reconoce como comando. Si quieres iniciar una " +
-                        "conversación o responder a un usuario utilza el comando" +
-                        " #charlar <nic>").getBytes());
+                    cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " + 
+                        "Si quieres iniciar una conversación o responder a un usuario" + 
+                        "utilza el comando #charlar <nic>");
                 }
             }
         } catch (IOException e) {

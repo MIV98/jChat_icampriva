@@ -1,5 +1,7 @@
 // Iván Campelo
 
+import java.io.DataInput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -10,18 +12,18 @@ public class ClienteChat {
 
     public static void main(String[] args) {
         
-        if (args.length != 3) {
+        if (args.length != 2) {
             System.out.println("Uso: java ClienteChat <dirección_servidor> <nombre_nic>");
         } else {
             // Actual client functionality
             
             try {
-                // args[1] is <direccion_servidor>
-                Socket server = new Socket(args[1], ServidorChat.PORT);
-                // args[2] is <nombre_nic>
-                nick = args[2];
-                server.getOutputStream().write(nick.getBytes());
-                ClienteThread hilo = ServidorChat.usuariosConectados.get(server.getInputStream().readAllBytes().toString());
+                // args[0] is <direccion_servidor>
+                Socket server = new Socket(args[0], ServidorChat.PORT);
+                // args[1] is <nombre_nic>
+                nick = args[1];
+                ((DataOutputStream) server.getOutputStream()).writeUTF(nick);
+                ClienteThread hilo = ServidorChat.usuariosConectados.get(((DataInput) server.getInputStream()).readUTF());
                 System.out.println("Estás conectado com el nick " + nick);
                 hilo.join();
                 System.out.println("Adios...");
@@ -32,6 +34,5 @@ public class ClienteChat {
             }
 
         }
-
     }
 }
