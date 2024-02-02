@@ -117,12 +117,12 @@ public class ServidorChat {
                                 cliOut.writeUTF("!" + split[1]);
                             }
                         }
-                    } else if (comando.contains(Comando.AYUDA.toString())) {
+                    } else if (comando.toUpperCase().contains(Comando.AYUDA.toString())) {
                         cliOut.writeUTF("#listar: lista" +
                                 " todos los usuarios conectados.\n" +
                                 "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
                                 "#salir: se desconecta del chat");
-                    } else if (comando.contains(Comando.LISTAR.toString())) {
+                    } else if (comando.toUpperCase().contains(Comando.LISTAR.toString())) {
                         synchronized (ServidorChat.usuariosConectados) {
                             String salida = "Actualmente están conectados "
                                     + ServidorChat.usuariosConectados.size() + " usuarios:\n";
@@ -132,7 +132,7 @@ public class ServidorChat {
                             }
                             cliOut.writeUTF(salida);
                         }
-                    } else if (comando.contains(Comando.SALIR.toString())) {
+                    } else if (comando.toUpperCase().contains(Comando.SALIR.toString())) {
                         cliOut.writeUTF(Comando.SALIR.toString());
                         synchronized (ServidorChat.usuariosConectados) {
                             if (ServidorChat.usuariosConectados.containsKey(nick)) {
