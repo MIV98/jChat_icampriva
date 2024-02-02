@@ -12,6 +12,7 @@ public class ClienteThread  extends Thread {
 
     private boolean conversando;
     private String nickReceptor;
+    private boolean isRunning;
 
     private Thread receiver;
     private Thread sender;
@@ -19,6 +20,7 @@ public class ClienteThread  extends Thread {
     public ClienteThread(Socket socket, String nick) {
         this.socket = socket;
         this.nick = nick;
+        this.isRunning = true;
         this.conversando = false;
         this.nickReceptor = "";
     }
@@ -55,7 +57,7 @@ public class ClienteThread  extends Thread {
                     }
                 } while (!mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString()));
 
-                this.sender.interrupt();
+                this.isRunning = false;
             });
 
 
@@ -64,8 +66,13 @@ public class ClienteThread  extends Thread {
             this.sender = new Thread(() -> {
                 String mensaje = "";
                 Scanner sc = new Scanner(System.in);
-                while (true) {
+                while (this.isRunning) {
                     mensaje = sc.nextLine();
+
+                    if (!this.isRunning) {
+                        break;
+                    }
+
                     try {
                         if (this.isConversando()) {
                             mensaje = "!" + this.nickReceptor + " " + mensaje;
