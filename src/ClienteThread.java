@@ -80,7 +80,20 @@ public class ClienteThread  extends Thread {
 
                     try {
                         if (this.isConversando()) {
-                            mensaje = "!" + this.nickReceptor + " " + mensaje;
+
+                            /** Code to allow users to leave a conversation
+                            * RN the first time they type in #SALIR will "leave
+                            * the conversation and put them in regular mode again"
+                            * In reality nothing happens server side since 
+                            * client-to-client communication is based on tokens
+                            * sent to the server and managed server-side
+                            */
+                            if (mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR.toString)) {
+                                this.finalizarConversacion();
+                            } else {
+                                mensaje = "!" + this.nickReceptor + " " + mensaje;
+                            }
+
                         }
 
                         out.writeUTF(mensaje);
@@ -156,6 +169,9 @@ public class ClienteThread  extends Thread {
         this.nickReceptor = nickReceptor;
     }
 
-    
+    private void finalizarConversacion() {
+        this.conversando = false;
+        this.nickReceptor = "";
+    }
     
 }

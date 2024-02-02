@@ -104,7 +104,8 @@ public class ServidorChat {
                     // TODO refactor to a SWITCH
                     if (comando.toUpperCase().contains(Comando.CHARLAR.toString())) {
 
-                        // TODO how do clients get out of a conversation?
+                        // -T-O-D-O- how do clients get out of a conversation?
+                        // DONE -> This is managed on Client-Side
 
                         synchronized (ServidorChat.usuariosConectados) {
                             String[] split = comando.split(" ");
