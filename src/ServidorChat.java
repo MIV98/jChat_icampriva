@@ -89,13 +89,13 @@ public class ServidorChat {
                             // split[1] contains the actual message
                             String mensaje = "";
 
-                            for (int i = 2; i < split.length; i++) {
+                            for (int i = 1; i < split.length; i++) {
                                 mensaje += " " + split[i];
                             }
 
                             String mensajeSend = ">" + nick + mensaje;
                             DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
-                            receptorOut.writeUTF(mensaje);
+                            receptorOut.writeUTF(mensajeSend);
                         }
 
                     }
