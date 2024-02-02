@@ -27,6 +27,7 @@ public class ClienteChat {
                 DataOutputStream serverOut = new DataOutputStream(server.getOutputStream());
 
                 serverOut.writeUTF(nick);
+                
                 ClienteThread hilo = new ClienteThread(server, nick);
 
                 hilo.start();

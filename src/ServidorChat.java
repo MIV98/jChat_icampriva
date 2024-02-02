@@ -37,8 +37,6 @@ public class ServidorChat {
 
                 String nick = cliIn.readUTF();
                 // TODO handle users trying to connect with a username that already exists
-                
-                System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
 
                 synchronized (ServidorChat.usuariosConectados) {
                     if (ServidorChat.usuariosConectados.containsKey(nick)) {
@@ -48,6 +46,7 @@ public class ServidorChat {
                     } else {
                         ServidorChat.usuariosConectados.put(nick, cliente);
                         // Tell the client conection was successful
+                        System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
                         cliOut.writeUTF("Estás conectado con el nick " + nick);
                     }
                 }
@@ -100,10 +99,10 @@ public class ServidorChat {
 
                     }
                 } else {
-                    comando = comando.substring(1).toUpperCase(); // skip the "#"
+                    comando = comando.substring(1); // skip the "#"
 
                     // TODO refactor to a SWITCH
-                    if (comando.contains(Comando.CHARLAR.toString())) {
+                    if (comando.toUpperCase().contains(Comando.CHARLAR.toString())) {
 
                         // TODO how do clients get out of a conversation?
 

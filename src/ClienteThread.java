@@ -31,7 +31,7 @@ public class ClienteThread  extends Thread {
 
             this.receiver = new Thread(() -> {
                 String mensaje = "";
-                while (true) {
+                do {
                     try {
                         mensaje = in.readUTF();
 
@@ -40,7 +40,7 @@ public class ClienteThread  extends Thread {
                         }
 
                         // The server will tell the client to start a conversation with <user> by sending a !<user> message
-                        if (mensaje.contains("!")) {
+                        if (mensaje.startsWith("!")) {
                             // TODO make this more readable
                             this.iniciarConversacion(mensaje.substring(1));
                             mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
@@ -53,7 +53,7 @@ public class ClienteThread  extends Thread {
                         System.err.println("[ERROR] Conexión con Server perdida");
                         break;
                     }
-                }
+                } while (!mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString()));
 
                 this.sender.interrupt();
             });
