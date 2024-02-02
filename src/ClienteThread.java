@@ -90,6 +90,11 @@ public class ClienteThread  extends Thread {
                             */
                             if (mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR.toString())) {
                                 this.finalizarConversacion();
+                                mensaje = sc.nextLine();
+
+                                // I shouldn't have to check if this.isRunning
+                                // since there shouldn't be a possibility for
+                                // the user to disconnect via cmd
                             } else {
                                 mensaje = "!" + this.nickReceptor + " " + mensaje;
                             }
@@ -171,6 +176,7 @@ public class ClienteThread  extends Thread {
 
     private void finalizarConversacion() {
         this.conversando = false;
+        System.out.println("Has dejado la conversación con " + this.nickReceptor);
         this.nickReceptor = "";
     }
     
