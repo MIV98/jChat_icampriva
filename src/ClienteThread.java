@@ -43,10 +43,18 @@ public class ClienteThread  extends Thread {
 
                         // The server will tell the client to start a conversation with <user> by sending a !<user> message
                         if (mensaje.startsWith("!")) {
-                            // TODO make this more readable
-                            this.iniciarConversacion(mensaje.substring(1));
-                            mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
+                            //  finish a conversation when the recipient is disconnected
+                            if (this.isConversando()) {
+                                this.finalizarConversacion("El usuario " + this.nickReceptor + " está ha desconectado, dejando la conversación...");
+                            } else {
+                                // TODO make this more readable
+                                this.iniciarConversacion(mensaje.substring(1));
+                                mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
+                            }
                         }
+
+                        
+
 
                         System.out.println(mensaje);
                     } catch (IOException e) {
@@ -89,7 +97,7 @@ public class ClienteThread  extends Thread {
                             * sent to the server and managed server-side
                             */
                             if (mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR.toString())) {
-                                this.finalizarConversacion();
+                                this.finalizarConversacion("Has dejado la conversación con " + this.nickReceptor);
                                 mensaje = sc.nextLine();
 
                                 // I shouldn't have to check if this.isRunning
@@ -174,9 +182,10 @@ public class ClienteThread  extends Thread {
         this.nickReceptor = nickReceptor;
     }
 
-    private void finalizarConversacion() {
+    // Mensajito is shown to the user so they know the reason they left the conversation
+    private void finalizarConversacion(String mensajito) {
         this.conversando = false;
-        System.out.println("Has dejado la conversación con " + this.nickReceptor);
+        System.out.println(mensajito);
         this.nickReceptor = "";
     }
     

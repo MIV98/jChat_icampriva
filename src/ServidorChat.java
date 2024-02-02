@@ -96,6 +96,11 @@ public class ServidorChat {
                             String mensajeSend = ">" + nick + mensaje;
                             DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
                             receptorOut.writeUTF(mensajeSend);
+                        } else {
+                            // The recipient is disconnected so the client should leave the conversation
+                            // The content of the command is irrelevant, only the
+                            // "!" is important
+                            cliOut.writeUTF("!DISCONNECTED_USER");
                         }
 
                     }
