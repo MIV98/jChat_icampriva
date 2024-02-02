@@ -139,6 +139,8 @@ public class ServidorChat {
                                 System.out.println(nick + "\t"
                                         + cliente.getInetAddress() + "\tDESCONECTADO");
 
+                                cliente.close();
+
                                 usuariosConectados.remove(nick);
                             }
                         }

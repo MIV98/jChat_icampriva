@@ -58,6 +58,7 @@ public class ClienteThread  extends Thread {
                 this.sender.interrupt();
             });
 
+
             this.receiver.start();
 
             this.sender = new Thread(() -> {
@@ -80,7 +81,7 @@ public class ClienteThread  extends Thread {
 
             this.sender.start();
 
-            this.sender.join();
+            // this.sender.join();
             this.receiver.join();
 
         } catch (IOException ex) {
