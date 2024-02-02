@@ -69,8 +69,14 @@ public class ClienteThread  extends Thread {
                 String mensaje = "";
                 Scanner sc = new Scanner(System.in);
                 
-                while (this.isRunning) {
+                while (true) {
                     mensaje = sc.nextLine();
+
+                    // I break out of the loop manually here to avoid an IOException
+
+                    if (!this.isRunning) {
+                        break;
+                    }
 
                     try {
                         if (this.isConversando()) {
