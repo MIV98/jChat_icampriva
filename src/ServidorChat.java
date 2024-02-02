@@ -47,7 +47,8 @@ public class ServidorChat {
                         ServidorChat.usuariosConectados.put(nick, cliente);
                         // Tell the client conection was successful
                         System.out.println(nick + "\t" + cliente.getInetAddress() + "\tCONECTADO");
-                        cliOut.writeUTF("Estás conectado con el nick " + nick);
+                        cliOut.writeUTF("Estás conectado con el nick " + nick 
+                            + ".\nUse el comando #AYUDA para ver todos los comandos.");
                     }
                 }
 

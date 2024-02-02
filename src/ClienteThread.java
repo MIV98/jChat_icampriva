@@ -88,7 +88,7 @@ public class ClienteThread  extends Thread {
                             * client-to-client communication is based on tokens
                             * sent to the server and managed server-side
                             */
-                            if (mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR.toString)) {
+                            if (mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR.toString())) {
                                 this.finalizarConversacion();
                             } else {
                                 mensaje = "!" + this.nickReceptor + " " + mensaje;
