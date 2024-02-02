@@ -87,7 +87,13 @@ public class ServidorChat {
                         if (usuariosConectados.containsKey(nickReceptor)) {
                             Socket receptor = usuariosConectados.get(nickReceptor);
                             // split[1] contains the actual message
-                            String mensaje = ">" + nick + " " + split[1];
+                            String mensaje = "";
+
+                            for (int i = 2; i < split.length; i++) {
+                                mensaje += " " + split[i];
+                            }
+
+                            String mensajeSend = ">" + nick + mensaje;
                             DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
                             receptorOut.writeUTF(mensaje);
                         }
