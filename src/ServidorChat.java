@@ -42,6 +42,12 @@ public class ServidorChat {
                     if (ServidorChat.usuariosConectados.containsKey(nick)) {
                         cliOut.writeUTF("[ERROR] El usuario ya está conectado!");
                         cliOut.writeUTF(Comando.SALIR.toString());
+                        
+                        // Show a different prompt in the server to differentiate
+                        // rejections from disconnections
+                        System.out.println(nick + "\t"
+                            + cliente.getInetAddress() + "\tRECHAZADO");
+                        
                         cliente.close();
                     } else {
                         ServidorChat.usuariosConectados.put(nick, cliente);
@@ -52,9 +58,13 @@ public class ServidorChat {
                     }
                 }
 
-                Thread hiloSocket = new Thread(() -> manejarComandosSocket(nick, cliente));
+                // if connection wasn't rejected start a new thread
+                if (!cliente.isClosed()) {
+                    Thread hiloSocket = new Thread(() -> manejarComandosSocket(nick, cliente));
 
-                hiloSocket.start();
+                    hiloSocket.start();
+                }
+
             }
 
         } catch (IOException e) {
