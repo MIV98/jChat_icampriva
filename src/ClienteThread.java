@@ -46,6 +46,7 @@ public class ClienteThread  extends Thread {
                             //  finish a conversation when the recipient is disconnected
                             if (this.isConversando()) {
                                 this.finalizarConversacion("El usuario " + this.nickReceptor + " está ha desconectado, dejando la conversación...");
+                                mensaje = "";
                             } else {
                                 // TODO make this more readable
                                 this.iniciarConversacion(mensaje.substring(1));
