@@ -57,6 +57,8 @@ public class ClienteThread  extends Thread {
                     }
                 } while (!mensaje.equalsIgnoreCase(ServidorChat.Comando.SALIR.toString()));
 
+                System.out.println("Te has desconectado del server. Pulse Enter para salir.");
+
                 this.isRunning = false;
             });
 
@@ -66,12 +68,9 @@ public class ClienteThread  extends Thread {
             this.sender = new Thread(() -> {
                 String mensaje = "";
                 Scanner sc = new Scanner(System.in);
+                
                 while (this.isRunning) {
                     mensaje = sc.nextLine();
-
-                    if (!this.isRunning) {
-                        break;
-                    }
 
                     try {
                         if (this.isConversando()) {
