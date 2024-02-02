@@ -120,6 +120,9 @@ public class ServidorChat {
                                         "El usuario" + split[1] + " no se encuentra conectado." +
                                         " Utiliza el comando #list para ver los usuarios " +
                                         "conectados");
+                            } else if (nick.equals(split[1])) { // If sender is the same as the receiver
+                                // Don't allow users to try to talk to themselves
+                                cliOut.writeUTF("[ERROR] No puedes iniciar una conversación contigo mismo.");
                             } else {
                                 cliOut.writeUTF("!" + split[1]);
                             }
