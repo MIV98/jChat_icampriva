@@ -46,16 +46,13 @@ public class ClienteThread  extends Thread {
                             //  finish a conversation when the recipient is disconnected
                             if (this.isConversando()) {
                                 this.finalizarConversacion("El usuario " + this.nickReceptor + " está desconectado, dejando la conversación...");
-                                mensaje = "";
+                                mensaje = "Use #ayuda para ver una lista de comandos:";
                             } else {
                                 // TODO make this more readable
                                 this.iniciarConversacion(mensaje.substring(1));
                                 mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
                             }
                         }
-
-                        
-
 
                         System.out.println(mensaje);
                     } catch (IOException e) {
@@ -113,9 +110,12 @@ public class ClienteThread  extends Thread {
                         out.writeUTF(mensaje);
                     } catch (IOException e) {
                         System.err.println("[ERROR] Server desconectado.");
+                        sc.close();
                         break;
                     }
                 }
+
+                sc.close();
             });
 
             this.sender.start();

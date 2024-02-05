@@ -1,7 +1,5 @@
 // Iván Campelo
 
-import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,13 +13,17 @@ public class ClienteChat {
         
         if (args.length != 2) {
             System.out.println("Uso: java ClienteChat <dirección_servidor> <nombre_nic>");
+            if (args.length > 2) {
+                // I decided user nicknames shouldn't contain whitespaces
+                System.out.println("El <nombre_nic> no puede contener espacios.");
+            }
         } else {
-            // Actual client functionality
             
+            // Actual client functionality
             try {
                 // args[0] is <direccion_servidor>
                 Socket server = new Socket(args[0], ServidorChat.PORT);
-                // args[1] is <nombre_nic>
+                // args[1] is <nombre_nic>, since it doesn't support whitespaces
                 nick = args[1];
                 
                 DataOutputStream serverOut = new DataOutputStream(server.getOutputStream());

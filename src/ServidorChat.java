@@ -36,7 +36,6 @@ public class ServidorChat {
                 DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
                 String nick = cliIn.readUTF();
-                // TODO handle users trying to connect with a username that already exists
 
                 synchronized (ServidorChat.usuariosConectados) {
                     if (ServidorChat.usuariosConectados.containsKey(nick)) {
@@ -78,7 +77,7 @@ public class ServidorChat {
 
         try (DataInputStream cliIn = new DataInputStream(cliente.getInputStream())) {
             while (usuariosConectados.containsKey(nick)) {                
-                String comando = cliIn.readUTF(); // TODO make commands case insensitive
+                String comando = cliIn.readUTF();
                 DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
                 if (!comando.startsWith("#") && !comando.startsWith("!")) {
