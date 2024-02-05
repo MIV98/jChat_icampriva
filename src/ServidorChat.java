@@ -124,10 +124,11 @@ public class ServidorChat {
                         // DONE -> This is managed on Client-Side
 
                         synchronized (ServidorChat.usuariosConectados) {
+                            // TODO server shouldn't support whitespace in the username
                             String[] split = comando.split(" ");
                             if (!ServidorChat.usuariosConectados.containsKey(split[1])) {
                                 cliOut.writeUTF("[ERROR] " +
-                                        "El usuario" + split[1] + " no se encuentra conectado." +
+                                        "El usuario " + split[1] + " no se encuentra conectado." +
                                         " Utiliza el comando #list para ver los usuarios " +
                                         "conectados");
                             } else if (nick.equals(split[1])) { // If sender is the same as the receiver
