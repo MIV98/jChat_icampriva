@@ -1,3 +1,4 @@
+package Cliente;
 // Iván Campelo
 
 import java.io.DataInputStream;
@@ -5,6 +6,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
+
+import Servidor.ServidorChat;
+import Servidor.ServidorChat.Comando;
 
 public class ClienteThread  extends Thread {
     private String nick;
