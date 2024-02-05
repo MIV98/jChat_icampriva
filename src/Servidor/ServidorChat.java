@@ -102,7 +102,7 @@ public class ServidorChat {
                                 mensaje += " " + split[i];
                             }
 
-                            String mensajeSend = ">" + nick + mensaje;
+                            String mensajeSend = ">" + nick + ": " + mensaje;
                             DataOutputStream receptorOut = new DataOutputStream(receptor.getOutputStream());
                             receptorOut.writeUTF(mensajeSend);
                         } else {
