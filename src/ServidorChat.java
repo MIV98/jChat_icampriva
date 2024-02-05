@@ -77,7 +77,7 @@ public class ServidorChat {
     public static void manejarComandosSocket(String nick, Socket cliente) {
 
         try (DataInputStream cliIn = new DataInputStream(cliente.getInputStream())) {
-            while (usuariosConectados.containsKey(nick)) {
+            while (usuariosConectados.containsKey(nick)) {                
                 String comando = cliIn.readUTF(); // TODO make commands case insensitive
                 DataOutputStream cliOut = new DataOutputStream(cliente.getOutputStream());
 
@@ -173,6 +173,11 @@ public class ServidorChat {
                 }
             }
         } catch (IOException e) {
+            // connection is lost so user should be removed and their nickname freed
+            if (usuariosConectados.containsKey(nick)) {
+                usuariosConectados.remove(nick);
+            }
+
             System.out.println(nick + "\t"
                     + cliente.getInetAddress() + "\tDESCONECTADO");
         }

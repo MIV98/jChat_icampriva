@@ -36,7 +36,8 @@ public class ClienteChat {
                 server.close();
                 
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                System.err.println("[ERROR] No se puede conectar con el server en " 
+                    + args[0] + ":" + ServidorChat.PORT);
             } catch (InterruptedException e) {
                 System.err.println("[ERROR] Hilo interrumpido");
             } catch (Exception e) {
