@@ -87,7 +87,6 @@ public class ServidorChat {
                             "conversación o responder a un usuario utiliza el comando" +
                             " #charlar <nic>");
                 } else if (comando.startsWith("!")) {
-                    // TODO check if they try to chat with themselves
                     synchronized (ServidorChat.usuariosConectados) {
                         String[] split = comando.split(" ");
 
