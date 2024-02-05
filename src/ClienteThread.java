@@ -31,6 +31,7 @@ public class ClienteThread  extends Thread {
             
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
+            // This thread will receive messages from the server
             this.receiver = new Thread(() -> {
                 String mensaje = "";
                 do {
@@ -41,14 +42,21 @@ public class ClienteThread  extends Thread {
                             break;
                         }
 
-                        // The server will tell the client to start a conversation with <user> by sending a !<user> message
+                        /** The server will tell the client to start a conversation 
+                        * with <user> by sending a !<user> message.
+                        *
+                        * The way I decided to implement this, if a user is IN a conversation
+                        * They can no longer input #commands (except for #salir, 
+                        * to leave the conversation).
+                        * This is the intended behavior as of rn.
+                        */
                         if (mensaje.startsWith("!")) {
                             //  finish a conversation when the recipient is disconnected
                             if (this.isConversando()) {
                                 this.finalizarConversacion("El usuario " + this.nickReceptor + " está desconectado, dejando la conversación...");
                                 mensaje = "Use #ayuda para ver una lista de comandos:";
                             } else {
-                                // TODO make this more readable
+                                // substring with beginIndex1 to skip the "!" server token
                                 this.iniciarConversacion(mensaje.substring(1));
                                 mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
                             }
@@ -71,6 +79,7 @@ public class ClienteThread  extends Thread {
 
             this.receiver.start();
 
+            // This thread is dedicated to sending messages to the server
             this.sender = new Thread(() -> {
                 String mensaje = "";
                 Scanner sc = new Scanner(System.in);
@@ -98,7 +107,7 @@ public class ClienteThread  extends Thread {
                                 this.finalizarConversacion("Has dejado la conversación con " + this.nickReceptor);
                                 mensaje = sc.nextLine();
 
-                                // I shouldn't have to check if this.isRunning
+                                // I probably don't have to check if this.isRunning()
                                 // since there shouldn't be a possibility for
                                 // the user to disconnect via cmd
                             } else {
@@ -120,8 +129,11 @@ public class ClienteThread  extends Thread {
 
             this.sender.start();
 
-            // this.sender.join();
+            // I don't necessarily need to wait for both threads to finish
+            // Especially since the scanner is blocking the sender thread until
+            // last user input (maybe change this but I like the exit message prompt thingy)
             this.receiver.join();
+            this.sender.join();
 
         } catch (IOException ex) {
             System.err.println("Error obteniendo Socket Data Streams");
@@ -183,7 +195,7 @@ public class ClienteThread  extends Thread {
         this.nickReceptor = nickReceptor;
     }
 
-    // Mensajito is shown to the user so they know the reason they left the conversation
+    // Mensajito is shown to the user so they know the reason they left/got kicked from the conversation
     private void finalizarConversacion(String mensajito) {
         this.conversando = false;
         System.out.println(mensajito);
