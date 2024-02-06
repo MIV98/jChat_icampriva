@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 public class ServidorChat {
 
-    public static final String IP_SERVER = "192.168.0.27";
     public static final int PORT = 5;
 
     public static HashMap<String, Socket> usuariosConectados;
