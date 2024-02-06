@@ -173,8 +173,10 @@ public class ServidorChat {
             }
         } catch (IOException e) {
             // connection is lost so user should be removed and their nickname freed
-            if (usuariosConectados.containsKey(nick)) {
-                usuariosConectados.remove(nick);
+            synchronized (usuariosConectados) {
+                if (usuariosConectados.containsKey(nick)) {
+                    usuariosConectados.remove(nick);
+                }
             }
 
             System.out.println(nick + "\t"
