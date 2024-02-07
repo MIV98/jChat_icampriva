@@ -117,10 +117,6 @@ public class ServidorChat {
 
                     // TODO refactor to a SWITCH
                     if (comando.toUpperCase().contains(Comando.CHARLAR.toString())) {
-
-                        // -T-O-D-O- how do clients get out of a conversation?
-                        // DONE -> This is managed on Client-Side
-
                         synchronized (ServidorChat.usuariosConectados) {
                             // TODO server shouldn't support whitespace in the username
                             String[] split = comando.split(" ");
