@@ -47,11 +47,6 @@ public class ClienteThread  extends Thread {
 
                         /** The server will tell the client to start a conversation 
                         * with <user> by sending a !<user> message.
-                        *
-                        * The way I decided to implement this, if a user is IN a conversation
-                        * They can no longer input #commands (except for #salir, 
-                        * to leave the conversation).
-                        * This is the intended behavior as of rn.
                         */
                         if (mensaje.startsWith("!")) {
                             //  finish a conversation when the recipient is disconnected
