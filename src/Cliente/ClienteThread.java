@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import Servidor.ServidorChat;
-import Servidor.ServidorChat.Comando;
 
 public class ClienteThread  extends Thread {
     private String nick;
