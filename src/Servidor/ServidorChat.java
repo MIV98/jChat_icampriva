@@ -133,8 +133,7 @@ public class ServidorChat {
                             }
                         }
                     } else if (comando.toUpperCase().contains(Comando.AYUDA.toString())) {
-                        cliOut.writeUTF("#listar: lista" +
-                                " todos los usuarios conectados.\n" +
+                        cliOut.writeUTF("#listar: lista todos los usuarios conectados.\n" +
                                 "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
                                 "#salir: se desconecta del chat");
                     } else if (comando.toUpperCase().contains(Comando.LISTAR.toString())) {
@@ -145,6 +144,7 @@ public class ServidorChat {
                             for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
                                 salida += e.getKey() + "\n"; // the key is the username
                             }
+                            
                             cliOut.writeUTF(salida);
                         }
                     } else if (comando.toUpperCase().contains(Comando.SALIR.toString())) {
