@@ -62,7 +62,7 @@ public class ClienteThread  extends Thread {
                             } else {
                                 // substring with beginIndex1 to skip the "!" server token
                                 this.iniciarConversacion(mensaje.substring(1));
-                                mensaje = "Ahora estás conectado con " + this.nickReceptor + " Escribe para hablarle";
+                                mensaje = "Ahora estás conectado con " + this.nickReceptor + ". Escribe para hablarle";
                             }
                         }
 
@@ -99,22 +99,7 @@ public class ClienteThread  extends Thread {
 
                     try {
                         if (this.isConversando()) {
-
-                            /** Code to allow users to leave a conversation
-                            * RN the first time they type in #SALIR will "leave
-                            * the conversation and put them in regular mode again"
-                            * In reality nothing happens server side since 
-                            * client-to-client communication is based on tokens
-                            * sent to the server and managed server-side
-                            */
-                            if (mensaje.toUpperCase().startsWith("#" + ServidorChat.Comando.SALIR)) {
-                                this.finalizarConversacion("Has dejado la conversación con " + this.nickReceptor);
-                                mensaje = sc.nextLine();
-
-                                // I probably don't have to check if this.isRunning()
-                                // since there shouldn't be a possibility for
-                                // the user to disconnect via cmd during conversation
-                            } else if (this.isConversando() && mensaje.toUpperCase().startsWith("#" + ServidorChat.Comando.CHARLAR)) {
+                            if (mensaje.toUpperCase().startsWith("#" + ServidorChat.Comando.CHARLAR)) {
                                 // Special case if user tries to change receiver mid-conversation
                                 this.finalizarConversacion("Cambiando de receptor:");
                             } else if (!mensaje.startsWith("#")) {
@@ -122,7 +107,6 @@ public class ClienteThread  extends Thread {
                                 // send the contents to the receiver
                                 mensaje = "!" + this.nickReceptor + " " + mensaje;
                             } 
-
                         }
 
                         out.writeUTF(mensaje);
