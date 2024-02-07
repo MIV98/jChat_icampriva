@@ -106,17 +106,17 @@ public class ClienteThread  extends Thread {
                             * In reality nothing happens server side since 
                             * client-to-client communication is based on tokens
                             * sent to the server and managed server-side
+                            * This also implies any other messages starting 
+                            * with a command will be ignored and sent as plain text
+                            * This is the intended functionality (for now)
                             */
-                            // TODO this is a bit of a funky way to check this 
-                            // and it could be broken by an user ("# blabla #salir")
-                            if (mensaje.startsWith("#") && 
-                                    mensaje.toUpperCase().contains("#" + ServidorChat.Comando.SALIR)) {
+                            if (mensaje.toUpperCase().startsWith("#" + ServidorChat.Comando.SALIR)) {
                                 this.finalizarConversacion("Has dejado la conversación con " + this.nickReceptor);
                                 mensaje = sc.nextLine();
 
                                 // I probably don't have to check if this.isRunning()
                                 // since there shouldn't be a possibility for
-                                // the user to disconnect via cmd
+                                // the user to disconnect via cmd during conversation
                             } else {
                                 mensaje = "!" + this.nickReceptor + " " + mensaje;
                             }
