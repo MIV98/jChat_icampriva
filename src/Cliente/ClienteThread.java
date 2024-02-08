@@ -102,6 +102,7 @@ public class ClienteThread  extends Thread {
                                 // Check if the user is trying to change receiver 
                                 // to same user they're already talking to
                                 if (mensaje.split("\s+")[1].equals(this.nickReceptor)) {
+                                    // TODO handle this a better way
                                     this.finalizarConversacion("Ya estás charlando con " + this.nickReceptor);
                                 } else {
                                     this.finalizarConversacion("Cambiando de receptor:");
