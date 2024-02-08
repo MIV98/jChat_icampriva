@@ -175,7 +175,7 @@ public class ServidorChat {
                                     "utilza el comando #charlar <nic>");
                         }
                     } else {
-                        cliOut.writeUTF("[ERROR] Por favor, escriba un comando después de la almohadilla (#).");
+                        cliOut.writeUTF("[ERROR] Por favor, escriba un comando después de la almohadilla (#) sin espacios.");
                     }
                 }
             }
