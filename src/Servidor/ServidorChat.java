@@ -114,58 +114,68 @@ public class ServidorChat {
                     }
                 } else {
                     comando = comando.substring(1); // skip the "#"
+                    
+                    // safety check in case user only inputs a "#"
+                    if (comando.length() > 0) {
+                        // TODO refactor to a SWITCH
+                        // This check is a bit too much maybe but this way the command
+                        // has to actually be "#charlar" and "#charlar*" isn't accepted
+                        if (comando.toUpperCase().split(" ")[0].equals(Comando.CHARLAR.toString())) {
+                            synchronized (ServidorChat.usuariosConectados) {
+                                // TODO server shouldn't support whitespace in the username
+                                String[] split = comando.split(" ");
 
-                    // TODO refactor to a SWITCH
-                    // This check is a bit too much maybe but this way the command
-                    // has to actually be "#charlar" and "#charlar*" isn't accepted
-                    if (comando.toUpperCase().split(" ")[0].equals(Comando.CHARLAR.toString())) {
-                        synchronized (ServidorChat.usuariosConectados) {
-                            // TODO server shouldn't support whitespace in the username
-                            String[] split = comando.split(" ");
-                            if (!ServidorChat.usuariosConectados.containsKey(split[1])) {
-                                cliOut.writeUTF("[ERROR] " +
-                                        "El usuario " + split[1] + " no se encuentra conectado." +
-                                        " Utiliza el comando #list para ver los usuarios " +
-                                        "conectados");
-                            } else if (nick.equals(split[1])) { // If sender is the same as the receiver
-                                // Don't allow users to try to talk to themselves
-                                cliOut.writeUTF("[ERROR] No puedes iniciar una conversación contigo mismo.");
-                            } else {
-                                cliOut.writeUTF("!" + split[1]);
+                                if (split.length == 2) {
+                                    if (!ServidorChat.usuariosConectados.containsKey(split[1])) {
+                                        cliOut.writeUTF("[ERROR] " +
+                                                "El usuario " + split[1] + " no se encuentra conectado." +
+                                                " Utiliza el comando #list para ver los usuarios " +
+                                                "conectados");
+                                    } else if (nick.equals(split[1])) { // If sender is the same as the receiver
+                                        // Don't allow users to try to talk to themselves
+                                        cliOut.writeUTF("[ERROR] No puedes iniciar una conversación contigo mismo.");
+                                    } else {
+                                        cliOut.writeUTF("!" + split[1]);
+                                    }
+                                } else {
+                                    cliOut.writeUTF("[ERROR] Introduzca un nombre de usuario válido después del comando #charlar");
+                                }
                             }
-                        }
-                    } else if (comando.toUpperCase().equals(Comando.AYUDA.toString())) {
-                        cliOut.writeUTF("#listar: lista todos los usuarios conectados.\n" +
-                                "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
-                                "#salir: se desconecta del chat");
-                    } else if (comando.toUpperCase().equals(Comando.LISTAR.toString())) {
-                        synchronized (ServidorChat.usuariosConectados) {
-                            String salida = "Actualmente están conectados "
-                                    + ServidorChat.usuariosConectados.size() + " usuarios:\n";
-
-                            for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
-                                salida += e.getKey() + "\n"; // the key is the username
+                        } else if (comando.toUpperCase().equals(Comando.AYUDA.toString())) {
+                            cliOut.writeUTF("#listar: lista todos los usuarios conectados.\n" +
+                                    "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
+                                    "#salir: se desconecta del chat");
+                        } else if (comando.toUpperCase().equals(Comando.LISTAR.toString())) {
+                            synchronized (ServidorChat.usuariosConectados) {
+                                String salida = "Actualmente están conectados "
+                                        + ServidorChat.usuariosConectados.size() + " usuarios:\n";
+    
+                                for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
+                                    salida += e.getKey() + "\n"; // the key is the username
+                                }
+                                
+                                cliOut.writeUTF(salida);
                             }
-                            
-                            cliOut.writeUTF(salida);
-                        }
-                    } else if (comando.toUpperCase().equals(Comando.SALIR.toString())) {
-                        cliOut.writeUTF(Comando.SALIR.toString());
-                        synchronized (ServidorChat.usuariosConectados) {
-                            if (ServidorChat.usuariosConectados.containsKey(nick)) {
-                                System.out.println(nick + "\t"
-                                        + cliente.getInetAddress() + "\tDESCONECTADO");
-
-                                cliente.close();
-
-                                usuariosConectados.remove(nick);
+                        } else if (comando.toUpperCase().equals(Comando.SALIR.toString())) {
+                            cliOut.writeUTF(Comando.SALIR.toString());
+                            synchronized (ServidorChat.usuariosConectados) {
+                                if (ServidorChat.usuariosConectados.containsKey(nick)) {
+                                    System.out.println(nick + "\t"
+                                            + cliente.getInetAddress() + "\tDESCONECTADO");
+    
+                                    cliente.close();
+    
+                                    usuariosConectados.remove(nick);
+                                }
                             }
+                        } else {
+                            // TODO this is the same code as above soooo... refactor a bit
+                            cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " +
+                                    "Si quieres iniciar una conversación o responder a un usuario" +
+                                    "utilza el comando #charlar <nic>");
                         }
                     } else {
-                        // TODO this is the same code as above soooo... refactor a bit
-                        cliOut.writeUTF("[ERROR] " + comando + " no se reconoce como comando. " +
-                                "Si quieres iniciar una conversación o responder a un usuario" +
-                                "utilza el comando #charlar <nic>");
+                        cliOut.writeUTF("[ERROR] Por favor, escriba un comando después de la almohadilla (#).");
                     }
                 }
             }
