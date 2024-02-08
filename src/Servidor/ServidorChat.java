@@ -116,7 +116,9 @@ public class ServidorChat {
                     comando = comando.substring(1); // skip the "#"
 
                     // TODO refactor to a SWITCH
-                    if (comando.toUpperCase().contains(Comando.CHARLAR.toString())) {
+                    // This check is a bit too much maybe but this way the command
+                    // has to actually be "#charlar" and "#charlar*" isn't accepted
+                    if (comando.toUpperCase().split(" ")[0].equals(Comando.CHARLAR.toString())) {
                         synchronized (ServidorChat.usuariosConectados) {
                             // TODO server shouldn't support whitespace in the username
                             String[] split = comando.split(" ");
@@ -132,11 +134,11 @@ public class ServidorChat {
                                 cliOut.writeUTF("!" + split[1]);
                             }
                         }
-                    } else if (comando.toUpperCase().contains(Comando.AYUDA.toString())) {
+                    } else if (comando.toUpperCase().equals(Comando.AYUDA.toString())) {
                         cliOut.writeUTF("#listar: lista todos los usuarios conectados.\n" +
                                 "#charlar <usuario>: comienza la comunicación con el usuario <usuario>\n" +
                                 "#salir: se desconecta del chat");
-                    } else if (comando.toUpperCase().contains(Comando.LISTAR.toString())) {
+                    } else if (comando.toUpperCase().equals(Comando.LISTAR.toString())) {
                         synchronized (ServidorChat.usuariosConectados) {
                             String salida = "Actualmente están conectados "
                                     + ServidorChat.usuariosConectados.size() + " usuarios:\n";
@@ -147,7 +149,7 @@ public class ServidorChat {
                             
                             cliOut.writeUTF(salida);
                         }
-                    } else if (comando.toUpperCase().contains(Comando.SALIR.toString())) {
+                    } else if (comando.toUpperCase().equals(Comando.SALIR.toString())) {
                         cliOut.writeUTF(Comando.SALIR.toString());
                         synchronized (ServidorChat.usuariosConectados) {
                             if (ServidorChat.usuariosConectados.containsKey(nick)) {

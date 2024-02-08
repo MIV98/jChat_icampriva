@@ -93,7 +93,7 @@ public class ClienteThread  extends Thread {
 
                     try {
                         if (this.isConversando()) {
-                            if (mensaje.toUpperCase().startsWith("#" + ServidorChat.Comando.CHARLAR)) {
+                            if (mensaje.toUpperCase().split(" ")[0].equals("#" + ServidorChat.Comando.CHARLAR)) {
                                 // Special case if user tries to change receiver mid-conversation
                                 this.finalizarConversacion("Cambiando de receptor:");
                             } else if (!mensaje.startsWith("#")) {
