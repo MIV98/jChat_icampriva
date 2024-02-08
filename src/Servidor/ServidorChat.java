@@ -87,6 +87,7 @@ public class ServidorChat {
                             " #charlar <nic>");
                 } else if (comando.startsWith("!")) {
                     synchronized (ServidorChat.usuariosConectados) {
+                        // This split is fine with just one space since it's managed by the client
                         String[] split = comando.split(" ");
 
                         // split[0] contains recipient username, beginIndex:1 skips the "!"
@@ -123,7 +124,7 @@ public class ServidorChat {
                         if (comando.toUpperCase().split(" ")[0].equals(Comando.CHARLAR.toString())) {
                             synchronized (ServidorChat.usuariosConectados) {
                                 // TODO server shouldn't support whitespace in the username
-                                String[] split = comando.split(" ");
+                                String[] split = comando.split("\s+");
 
                                 if (split.length == 2) {
                                     if (!ServidorChat.usuariosConectados.containsKey(split[1])) {

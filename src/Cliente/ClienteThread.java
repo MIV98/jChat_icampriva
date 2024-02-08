@@ -95,10 +95,18 @@ public class ClienteThread  extends Thread {
                         if (this.isConversando()) {
                             // Safety checks for proper command formatting
                             // These usually happen server side but this is a special case
-                            if (mensaje.toUpperCase().split(" ").length == 2 && 
-                                mensaje.toUpperCase().split(" ")[0].equals("#" + ServidorChat.Comando.CHARLAR)) {
+                            if (mensaje.toUpperCase().split("\s+").length == 2 && 
+                                mensaje.toUpperCase().split("\s+")[0].equals("#" + ServidorChat.Comando.CHARLAR)) {
                                 // Special case if user tries to change receiver mid-conversation
-                                this.finalizarConversacion("Cambiando de receptor:");
+                                
+                                // Check if the user is trying to change receiver 
+                                // to same user they're already talking to
+                                if (mensaje.split("\s+")[1].equals(this.nickReceptor)) {
+                                    this.finalizarConversacion("Ya estás charlando con " + this.nickReceptor);
+                                } else {
+                                    this.finalizarConversacion("Cambiando de receptor:");
+                                }
+                                
                             } else if (!mensaje.startsWith("#")) {
                                 // If they're not trying to imput a command
                                 // send the contents to the receiver
