@@ -1,5 +1,5 @@
-package Cliente;
 // Iván Campelo
+package Cliente;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
