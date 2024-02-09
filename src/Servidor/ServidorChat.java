@@ -158,7 +158,9 @@ public class ServidorChat {
                             + ServidorChat.usuariosConectados.size() + " usuarios:\n";
    
                     for (Entry<String, Socket> e : ServidorChat.usuariosConectados.entrySet()) {
-                        salida += e.getKey() + "\n"; // the key is the username
+                        // This adds a distinction so the user's can recognise thir own username
+                        if (nick.equals(e.getKey())) salida += e.getKey() + " (tú)" + "\n";
+                        else salida += e.getKey() + "\n"; // the key is the username
                     }
                     
                     cliOut.writeUTF(salida);
